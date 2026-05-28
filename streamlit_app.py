@@ -1,3 +1,6 @@
+import math
+
+import matplotlib.pyplot as plt
 import streamlit as st
 
 st.set_page_config(page_title="아폴로니우스 내분점 실험", page_icon="🔵", layout="centered")
@@ -29,32 +32,67 @@ st.markdown("---")
 st.markdown(
     "### 사용 방법\n"
     "1. AP : PB 비율을 m:n 형태로 입력합니다.\n"
-    "2. 계산된 내분점 P 좌표를 확인합니다."
+    "2. 계산된 내분점 P 좌표를 확인합니다.\n"
+    "3. 수직선과 원으로 결과를 시각화합니다."
 )
 
 ax = 0.0
 ay = 0.0
 bx = 5.0
 by = 0.0
+px = (ratio_n * ax + ratio_m * bx) / (ratio_m + ratio_n)
+py = (ratio_n * ay + ratio_m * by) / (ratio_m + ratio_n)
 
-if ratio_m + ratio_n == 0:
-    st.error("비율의 합이 0이 될 수 없습니다.")
+st.subheader("계산된 내분점")
+st.write(f"P = ({px:.4f}, {py:.4f})")
+
+st.markdown(
+    "### 공식\n"
+    "내분점 P의 좌표는 다음과 같습니다:\n"
+    "$P = \left(\frac{nA_x + mB_x}{m+n},\ \frac{nA_y + mB_y}{m+n}\right)$\n"
+    "\n\n"
+    "여기서 AP:PB = m:n 입니다."
+)
+
+k = ratio_m / ratio_n if ratio_n != 0 else float("inf")
+
+fig, ax_plot = plt.subplots(figsize=(6, 6))
+
+# 수직선 그리기
+line_x = px
+ax_plot.axvline(line_x, color="#1f77b4", linestyle="--", linewidth=2)
+
+# 원 그리기
+if ratio_n == 0:
+    circle_center_x = bx
+    circle_radius = 0.5
+elif ratio_m == 0:
+    circle_center_x = ax
+    circle_radius = 0.5
+elif math.isclose(k, 1.0):
+    circle_center_x = (ax + bx) / 2
+    circle_radius = abs(bx - ax) * 0.4
 else:
-    px = (ratio_n * ax + ratio_m * bx) / (ratio_m + ratio_n)
-    py = (ratio_n * ay + ratio_m * by) / (ratio_m + ratio_n)
+    circle_center_x = (k**2 * bx) / (k**2 - 1)
+    circle_radius = abs(k * (bx - ax) / (k**2 - 1))
 
-    st.subheader("계산된 내분점")
-    st.write(f"P = ({px:.4f}, {py:.4f})")
+circle = plt.Circle((circle_center_x, 0), circle_radius, color="#ff7f0e", fill=False, linewidth=2)
+ax_plot.add_patch(circle)
 
-    st.markdown(
-        "### 공식\n"
-        "내분점 P의 좌표는 다음과 같습니다:\n"
-        "$P = \left(\frac{nA_x + mB_x}{m+n},\ \frac{nA_y + mB_y}{m+n}\right)$\n"
-        "\n\n"
-        "여기서 AP:PB = m:n 입니다."
-    )
+# P 점 표시
+ax_plot.scatter([px], [py], color="#2ca02c", s=80, zorder=5)
+ax_plot.text(px, py, " P", fontsize=12, verticalalignment="bottom")
 
-    if ratio_m > 0 and ratio_n > 0:
-        st.success("내분점이 AB 선분 위에 올바르게 계산되었습니다.")
-    else:
-        st.warning("비율 중 하나가 0이면 점이 A 또는 B에 위치합니다.")
+# 축 숨기기 및 간단한 레이아웃
+limit = max(abs(circle_center_x - line_x), circle_radius, 1) * 1.3
+ax_plot.set_xlim(line_x - limit, line_x + limit)
+ax_plot.set_ylim(-limit, limit)
+ax_plot.axis("off")
+ax_plot.set_aspect("equal", adjustable="box")
+
+st.pyplot(fig)
+
+if ratio_m > 0 and ratio_n > 0:
+    st.success("수직선과 원으로 Apollonius 조건을 시각화했습니다.")
+else:
+    st.warning("비율이 0을 포함하면 P는 고정점 A 또는 B에 위치합니다.")
