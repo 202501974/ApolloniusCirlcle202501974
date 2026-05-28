@@ -38,7 +38,7 @@ st.markdown(
 
 ax = 0.0
 ay = 0.0
-bx = 5.0
+bx = 100.0
 by = 0.0
 px = (ratio_n * ax + ratio_m * bx) / (ratio_m + ratio_n)
 py = (ratio_n * ay + ratio_m * by) / (ratio_m + ratio_n)
