@@ -19,8 +19,18 @@ with col2:
     bx = st.number_input("점 B x", value=5.0, step=0.5)
     by = st.number_input("점 B y", value=0.0, step=0.5)
 
-ratio_m = st.number_input("AP : PB 비율 m (분자)", value=1.0, min_value=0.0, step=0.5)
-ratio_n = st.number_input("AP : PB 비율 n (분모)", value=1.0, min_value=0.0, step=0.5)
+ratio_text = st.text_input("AP : PB 비율 (m:n)", value="1:1")
+ratio_m = 1.0
+ratio_n = 1.0
+try:
+    parts = [part.strip() for part in ratio_text.split(":") if part.strip() != ""]
+    if len(parts) != 2:
+        raise ValueError
+    ratio_m = float(parts[0])
+    ratio_n = float(parts[1])
+except ValueError:
+    st.error("비율을 'm:n' 형식으로 입력하세요. 예: 2:3")
+    st.stop()
 
 if ratio_m == 0 and ratio_n == 0:
     st.error("m과 n 중 하나는 0이 아니어야 합니다.")
@@ -30,7 +40,7 @@ st.markdown("---")
 st.markdown(
     "### 사용 방법\n"
     "1. 점 A와 B 좌표를 각각 입력합니다.\n"
-    "2. AP : PB 비율 m:n을 입력합니다.\n"
+    "2. AP : PB 비율을 m:n 형태로 입력합니다.\n"
     "3. 계산된 내분점 P와 그래프를 확인합니다."
 )
 
