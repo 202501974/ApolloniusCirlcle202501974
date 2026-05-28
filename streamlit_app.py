@@ -62,7 +62,7 @@ fig, ax_plot = plt.subplots(figsize=(6, 6))
 ax_plot.plot([ax, bx], [ay, by], color="black", linewidth=3)
 
 # A, B 점 표시
-ax_plot.scatter([ax, bx], [ay, by], color="#1f77b4", s=80, zorder=5)
+ax_plot.scatter([ax, bx], [ay, by], color="black", s=80, zorder=5)
 ax_plot.text(ax, ay, " A", fontsize=12, verticalalignment="bottom", horizontalalignment="right")
 ax_plot.text(bx, by, " B", fontsize=12, verticalalignment="bottom", horizontalalignment="left")
 
@@ -80,7 +80,7 @@ else:
     circle_center_x = (k**2 * bx) / (k**2 - 1)
     circle_radius = abs(k * (bx - ax) / (k**2 - 1))
 
-circle = plt.Circle((circle_center_x, 0), circle_radius, color="#ff7f0e", fill=False, linewidth=2)
+circle = plt.Circle((circle_center_x, 0), circle_radius, edgecolor="red", fill=False, linewidth=2)
 ax_plot.add_patch(circle)
 
 # P 점 표시
