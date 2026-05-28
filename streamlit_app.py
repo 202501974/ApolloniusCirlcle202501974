@@ -28,23 +28,12 @@ if ratio_m == 0 and ratio_n == 0:
     st.error("m과 n 중 하나는 0이 아니어야 합니다.")
     st.stop()
 
-st.markdown("---")
-st.markdown(
-    "### 사용 방법\n"
-    "1. AP : PB 비율을 m:n 형태로 입력합니다.\n"
-    "2. 계산된 내분점 P 좌표를 확인합니다.\n"
-    "3. 수직선과 원으로 결과를 시각화합니다."
-)
-
 ax = 0.0
 ay = 0.0
 bx = 100.0
 by = 0.0
 px = (ratio_n * ax + ratio_m * bx) / (ratio_m + ratio_n)
 py = (ratio_n * ay + ratio_m * by) / (ratio_m + ratio_n)
-
-st.subheader("계산된 내분점")
-st.write(f"P = ({px:.4f}, {py:.4f})")
 
 st.markdown(
     "### 공식\n"
