@@ -1,19 +1,24 @@
-# 🎈 Blank app template
+# 🔵 아폴로니우스 내분점 실험 앱
 
-A simple Streamlit app template for you to modify!
+두 점 A와 B 사이에서 `AP : PB` 비율을 입력하면 내분점 `P`를 계산하고 시각화하는 Streamlit 앱입니다.
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://blank-app-template.streamlit.app/)
+### 실행 방법
 
-### How to run it on your own machine
-
-1. Install the requirements
+1. 요구사항 설치
 
    ```
-   $ pip install -r requirements.txt
+   pip install -r requirements.txt
    ```
 
-2. Run the app
+2. 앱 실행
 
    ```
-   $ streamlit run streamlit_app.py
+   streamlit run streamlit_app.py
    ```
+
+### 앱 기능
+
+- 점 A와 B의 좌표 입력
+- `AP : PB` 비율 입력
+- 계산된 내분점 P 위치 표시
+- AB 선분 위의 내분점 그래프 출력
