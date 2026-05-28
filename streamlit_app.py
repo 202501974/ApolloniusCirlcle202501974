@@ -7,12 +7,10 @@ st.set_page_config(page_title="아폴로니우스 내분점 실험", page_icon="
 
 st.title("🔵 아폴로니우스 내분점 실험")
 st.markdown(
-    "점 A와 B는 고정되어 있습니다. 아래에서 AP : PB 비율을 입력하세요."
+    "점 A와 B는 고정되어 있습니다. 아래에서 AP : PB 비율만 입력하세요."
 )
 
 st.header("입력 값")
-st.write("- 점 A = (0, 0)")
-st.write("- 점 B = (5, 0)")
 ratio_text = st.text_input("AP : PB 비율 (m:n)", value="1:1")
 ratio_m = 1.0
 ratio_n = 1.0
@@ -43,8 +41,7 @@ bx = 5.0
 by = 0.0
 
 st.subheader("입력 결과")
-st.write(f"- 점 A = ({ax:.2f}, {ay:.2f})")
-st.write(f"- 점 B = ({bx:.2f}, {by:.2f})")
+st.write("- 점 A와 점 B는 이미 정해져 있습니다.")
 st.write(f"- AP : PB = {ratio_m:.2f} : {ratio_n:.2f}")
 
 if ratio_m + ratio_n == 0:
