@@ -65,7 +65,13 @@ st.markdown(
     "여기서 AP:PB = m:n 입니다."
 )
 
-k = ratio_m / ratio_n if ratio_n != 0 else float("inf")
+# 입력한 비율에 따른 Apollonius 원 계산
+if ratio_m != ratio_n:
+    circle_center_x = (ratio_m**2 * bx - ratio_n**2 * ax) / (ratio_m**2 - ratio_n**2)
+    circle_radius = abs(ratio_m * ratio_n * (bx - ax) / (ratio_m**2 - ratio_n**2))
+else:
+    circle_center_x = bx / 2
+    circle_radius = abs(bx - ax) / 2
 
 fig, ax_plot = plt.subplots(figsize=(4.5, 4.5))
 
@@ -88,14 +94,7 @@ if ratio_m != ratio_n:
 else:
     qx = None
 
-if ratio_m != ratio_n:
-    circle_center_x = (k**2 * bx) / (k**2 - 1)
-    circle_radius = abs(k * (bx - ax) / (k**2 - 1))
-else:
-    circle_center_x = bx / 2
-    circle_radius = abs(bx - ax) / 2
-
-# 추가 점들
+# 추가 점들 (입력한 비율에 따라 계산된 원 위)
 for group in st.session_state.shown_angle_groups:
     for angle_deg in group:
         angle = math.radians(angle_deg)
