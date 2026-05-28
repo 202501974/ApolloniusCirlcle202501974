@@ -58,9 +58,13 @@ k = ratio_m / ratio_n if ratio_n != 0 else float("inf")
 
 fig, ax_plot = plt.subplots(figsize=(6, 6))
 
-# 수직선 그리기
-line_x = px
-ax_plot.axvline(line_x, color="#1f77b4", linestyle="--", linewidth=2)
+# 수평선 그리기 (AB가 놓인 기준선)
+ax_plot.axhline(0, color="#1f77b4", linestyle="--", linewidth=2)
+
+# A, B 점 표시
+ax_plot.scatter([ax, bx], [ay, by], color="#1f77b4", s=80, zorder=5)
+ax_plot.text(ax, ay, " A", fontsize=12, verticalalignment="bottom", horizontalalignment="right")
+ax_plot.text(bx, by, " B", fontsize=12, verticalalignment="bottom", horizontalalignment="left")
 
 # 원 그리기
 if ratio_n == 0:
@@ -83,16 +87,20 @@ ax_plot.add_patch(circle)
 ax_plot.scatter([px], [py], color="#2ca02c", s=80, zorder=5)
 ax_plot.text(px, py, " P", fontsize=12, verticalalignment="bottom")
 
-# 축 숨기기 및 간단한 레이아웃
-limit = max(abs(circle_center_x - line_x), circle_radius, 1) * 1.3
-ax_plot.set_xlim(line_x - limit, line_x + limit)
-ax_plot.set_ylim(-limit, limit)
+# 간단한 범위 계산
+margin = max(abs(bx - ax), circle_radius, 1) * 0.4
+x_min = min(ax, bx, circle_center_x - circle_radius) - margin
+x_max = max(ax, bx, circle_center_x + circle_radius) + margin
+y_min = min(ay, by, py, -circle_radius) - margin
+y_max = max(ay, by, py, circle_radius) + margin
+ax_plot.set_xlim(x_min, x_max)
+ax_plot.set_ylim(y_min, y_max)
 ax_plot.axis("off")
 ax_plot.set_aspect("equal", adjustable="box")
 
 st.pyplot(fig)
 
 if ratio_m > 0 and ratio_n > 0:
-    st.success("수직선과 원으로 Apollonius 조건을 시각화했습니다.")
+    st.success("수평선과 원으로 Apollonius 조건을 시각화했습니다.")
 else:
     st.warning("비율이 0을 포함하면 P는 고정점 A 또는 B에 위치합니다.")
