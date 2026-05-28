@@ -28,6 +28,28 @@ if ratio_m == 0 and ratio_n == 0:
     st.error("m과 n 중 하나는 0이 아니어야 합니다.")
     st.stop()
 
+if "ratio_text" not in st.session_state or st.session_state.ratio_text != ratio_text:
+    st.session_state.ratio_text = ratio_text
+    st.session_state.click_count = 0
+    st.session_state.shown_angle_groups = []
+
+if "click_count" not in st.session_state:
+    st.session_state.click_count = 0
+if "shown_angle_groups" not in st.session_state:
+    st.session_state.shown_angle_groups = []
+
+if st.button("점 4개 추가"):
+    if st.session_state.click_count < 3:
+        angle_groups = [
+            [30, 60, 120, 150],
+            [210, 240, 300, 330],
+            [0, 90, 180, 270],
+        ]
+        st.session_state.shown_angle_groups.append(angle_groups[st.session_state.click_count])
+        st.session_state.click_count += 1
+
+st.write(f"클릭 횟수: {st.session_state.click_count} / 3")
+
 ax = 0.0
 ay = 0.0
 bx = 1000.0
@@ -55,33 +77,50 @@ ax_plot.scatter([ax, bx], [ay, by], color="black", s=80, zorder=5)
 ax_plot.text(ax, ay, " A", fontsize=12, verticalalignment="bottom", horizontalalignment="right")
 ax_plot.text(bx, by, " B", fontsize=12, verticalalignment="bottom", horizontalalignment="left")
 
-# 원 그리기
-if ratio_n == 0:
-    circle_center_x = bx
-    circle_radius = 0.5
-elif ratio_m == 0:
-    circle_center_x = ax
-    circle_radius = 0.5
-elif math.isclose(k, 1.0):
-    circle_center_x = (ax + bx) / 2
-    circle_radius = abs(bx - ax) * 0.4
+# 내분점과 외분점
+ax_plot.scatter([px], [py], color="blue", s=80, zorder=5)
+ax_plot.text(px, py, " P", fontsize=12, verticalalignment="bottom", horizontalalignment="center", color="blue")
+if ratio_m != ratio_n:
+    qx = (ratio_n * ax - ratio_m * bx) / (ratio_n - ratio_m)
+    qy = 0.0
+    ax_plot.scatter([qx], [qy], color="green", s=80, zorder=5)
+    ax_plot.text(qx, qy, " Q", fontsize=12, verticalalignment="top", horizontalalignment="center", color="green")
 else:
+    qx = None
+
+if ratio_m != ratio_n:
     circle_center_x = (k**2 * bx) / (k**2 - 1)
     circle_radius = abs(k * (bx - ax) / (k**2 - 1))
+else:
+    circle_center_x = bx / 2
+    circle_radius = abs(bx - ax) / 2
 
-circle = plt.Circle((circle_center_x, 0), circle_radius, edgecolor="red", fill=False, linewidth=2)
-ax_plot.add_patch(circle)
+# 추가 점들
+for group in st.session_state.shown_angle_groups:
+    for angle_deg in group:
+        angle = math.radians(angle_deg)
+        px_extra = circle_center_x + circle_radius * math.cos(angle)
+        py_extra = circle_radius * math.sin(angle)
+        ax_plot.scatter([px_extra], [py_extra], color="red", s=40, zorder=4)
 
-# P 점 표시
-ax_plot.scatter([px], [py], color="red", s=80, zorder=5)
-ax_plot.text(px, py, " P", fontsize=12, verticalalignment="bottom")
+show_circle = st.session_state.click_count >= 3
+if show_circle:
+    if ratio_m != ratio_n:
+        circle = plt.Circle((circle_center_x, 0), circle_radius, edgecolor="red", fill=False, linewidth=2)
+        ax_plot.add_patch(circle)
+    else:
+        ax_plot.axvline(bx / 2, color="red", linewidth=2)
 
 # 간단한 범위 계산
 margin = max(abs(bx - ax), circle_radius, 1) * 0.4
 x_min = min(ax, bx, circle_center_x - circle_radius) - margin
 x_max = max(ax, bx, circle_center_x + circle_radius) + margin
-y_min = min(ay, by, py, -circle_radius) - margin
-y_max = max(ay, by, py, circle_radius) + margin
+if ratio_m == ratio_n:
+    y_min = -margin
+    y_max = margin
+else:
+    y_min = min(ay, by, py, -circle_radius) - margin
+    y_max = max(ay, by, py, circle_radius) + margin
 ax_plot.set_xlim(x_min, x_max)
 ax_plot.set_ylim(y_min, y_max)
 ax_plot.axis("off")
@@ -89,7 +128,7 @@ ax_plot.set_aspect("equal", adjustable="box")
 
 st.pyplot(fig)
 
-if ratio_m > 0 and ratio_n > 0:
-    st.success("수평선과 원으로 Apollonius 조건을 시각화했습니다.")
+if show_circle:
+    st.success("3번 클릭 완료되었습니다. 원을 표시합니다.")
 else:
-    st.warning("비율이 0을 포함하면 P는 고정점 A 또는 B에 위치합니다.")
+    st.info("내분점과 외분점을 먼저 찾은 다음, 클릭으로 4개씩 추가 점이 표시됩니다.")
