@@ -65,13 +65,15 @@ st.markdown(
     "여기서 AP:PB = m:n 입니다."
 )
 
-# 입력한 비율에 따른 Apollonius 원 계산
+# 입력한 비율에 따른 Apollonius 원 또는 선 계산
 if ratio_m != ratio_n:
     circle_center_x = (ratio_m**2 * bx - ratio_n**2 * ax) / (ratio_m**2 - ratio_n**2)
     circle_radius = abs(ratio_m * ratio_n * (bx - ax) / (ratio_m**2 - ratio_n**2))
+    is_apollonius_line = False
 else:
-    circle_center_x = bx / 2
-    circle_radius = abs(bx - ax) / 2
+    circle_center_x = (ax + bx) / 2
+    circle_radius = 0.0
+    is_apollonius_line = True
 
 fig, ax_plot = plt.subplots(figsize=(4.5, 4.5))
 
@@ -94,30 +96,39 @@ if ratio_m != ratio_n:
 else:
     qx = None
 
-# 추가 점들 (입력한 비율에 따라 계산된 원 위)
+# 추가 점들 (입력한 비율에 맞는 Apollonius 원/선 위)
 for group in st.session_state.shown_angle_groups:
-    for angle_deg in group:
-        angle = math.radians(angle_deg)
-        px_extra = circle_center_x + circle_radius * math.cos(angle)
-        py_extra = circle_radius * math.sin(angle)
+    for idx, angle_deg in enumerate(group):
+        if is_apollonius_line:
+            offset = 80 + 40 * (idx % 2)
+            if idx >= 2:
+                offset = -offset
+            px_extra = circle_center_x
+            py_extra = offset
+        else:
+            angle = math.radians(angle_deg)
+            px_extra = circle_center_x + circle_radius * math.cos(angle)
+            py_extra = circle_radius * math.sin(angle)
         ax_plot.scatter([px_extra], [py_extra], color="red", s=40, zorder=4)
 
 show_circle = st.session_state.click_count >= 3
 if show_circle:
-    if ratio_m != ratio_n:
+    if is_apollonius_line:
+        ax_plot.axvline(circle_center_x, color="red", linewidth=2)
+    else:
         circle = plt.Circle((circle_center_x, 0), circle_radius, edgecolor="red", fill=False, linewidth=2)
         ax_plot.add_patch(circle)
-    else:
-        ax_plot.axvline(bx / 2, color="red", linewidth=2)
 
 # 간단한 범위 계산
-margin = max(abs(bx - ax), circle_radius, 1) * 0.4
-x_min = min(ax, bx, circle_center_x - circle_radius) - margin
-x_max = max(ax, bx, circle_center_x + circle_radius) + margin
-if ratio_m == ratio_n:
-    y_min = -margin
-    y_max = margin
+margin = max(abs(bx - ax), circle_radius if not is_apollonius_line else abs(bx - ax) / 2, 1) * 0.4
+if is_apollonius_line:
+    x_min = circle_center_x - margin
+    x_max = circle_center_x + margin
+    y_min = -200 - margin
+    y_max = 200 + margin
 else:
+    x_min = min(ax, bx, circle_center_x - circle_radius) - margin
+    x_max = max(ax, bx, circle_center_x + circle_radius) + margin
     y_min = min(ay, by, py, -circle_radius) - margin
     y_max = max(ay, by, py, circle_radius) + margin
 ax_plot.set_xlim(x_min, x_max)
@@ -128,6 +139,9 @@ ax_plot.set_aspect("equal", adjustable="box")
 st.pyplot(fig)
 
 if show_circle:
-    st.success("3번 클릭 완료되었습니다. Apollonius 원이 표시됩니다.")
+    if is_apollonius_line:
+        st.success("3번 클릭 완료되었습니다. Apollonius 수직선이 표시됩니다.")
+    else:
+        st.success("3번 클릭 완료되었습니다. Apollonius 원이 표시됩니다.")
 else:
     st.info("내분점과 외분점을 먼저 찾은 다음, 클릭으로 Apollonius 원 위의 점 4개씩 추가 표시됩니다.")
