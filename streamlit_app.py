@@ -84,7 +84,7 @@ circle = plt.Circle((circle_center_x, 0), circle_radius, edgecolor="red", fill=F
 ax_plot.add_patch(circle)
 
 # P 점 표시
-ax_plot.scatter([px], [py], color="#2ca02c", s=80, zorder=5)
+ax_plot.scatter([px], [py], color="red", s=80, zorder=5)
 ax_plot.text(px, py, " P", fontsize=12, verticalalignment="bottom")
 
 # 간단한 범위 계산
