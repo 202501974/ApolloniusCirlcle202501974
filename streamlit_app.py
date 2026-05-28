@@ -56,7 +56,7 @@ st.markdown(
 
 k = ratio_m / ratio_n if ratio_n != 0 else float("inf")
 
-fig, ax_plot = plt.subplots(figsize=(6, 6))
+fig, ax_plot = plt.subplots(figsize=(4.5, 4.5))
 
 # AB 선분 그리기 (실선, 검정)
 ax_plot.plot([ax, bx], [ay, by], color="black", linewidth=3)
