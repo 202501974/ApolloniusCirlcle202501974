@@ -38,7 +38,7 @@ if "click_count" not in st.session_state:
 if "shown_angle_groups" not in st.session_state:
     st.session_state.shown_angle_groups = []
 
-if st.button("점 4개 추가"):
+if st.button("원 위 점 4개 추가"):
     if st.session_state.click_count < 3:
         angle_groups = [
             [30, 60, 120, 150],
@@ -129,6 +129,6 @@ ax_plot.set_aspect("equal", adjustable="box")
 st.pyplot(fig)
 
 if show_circle:
-    st.success("3번 클릭 완료되었습니다. 원을 표시합니다.")
+    st.success("3번 클릭 완료되었습니다. Apollonius 원이 표시됩니다.")
 else:
-    st.info("내분점과 외분점을 먼저 찾은 다음, 클릭으로 4개씩 추가 점이 표시됩니다.")
+    st.info("내분점과 외분점을 먼저 찾은 다음, 클릭으로 Apollonius 원 위의 점 4개씩 추가 표시됩니다.")
