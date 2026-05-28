@@ -58,8 +58,8 @@ k = ratio_m / ratio_n if ratio_n != 0 else float("inf")
 
 fig, ax_plot = plt.subplots(figsize=(6, 6))
 
-# 수평선 그리기 (AB가 놓인 기준선)
-ax_plot.axhline(0, color="#1f77b4", linestyle="--", linewidth=2)
+# AB 선분 그리기 (실선, 검정)
+ax_plot.plot([ax, bx], [ay, by], color="black", linewidth=3)
 
 # A, B 점 표시
 ax_plot.scatter([ax, bx], [ay, by], color="#1f77b4", s=80, zorder=5)
